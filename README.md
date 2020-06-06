@@ -1,0 +1,2 @@
+# t20-Dash_Well_Viz
+The aim is to try and build some interactive log visualisations using dash in notebooks and demonstrate what is possible (and also what the limitations are) using dash on subsurface data. Ultimately it would be good to try and collate all the examples into a library of templates to share after the Hackathon :swung: I have put together a quick Google Sheet with some initial ideas, so feel free to either pick one that interests you or add something to the list that you think would be fun to make, all ideas welcome.
