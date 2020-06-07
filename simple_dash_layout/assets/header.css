@@ -1,0 +1,71 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+body {
+    font-family: sans-serif;
+    background-color: #fdfdfe;
+}
+
+.app-header {
+    height: 100px;
+    line-height: 60px;
+    background-color: rgb(32, 32, 32);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.logo_img{
+    height: 80px;
+}
+
+
+.app-header .app-header--title {
+    font-size: 22px;
+    margin-left: 15px;
+    color: floralwhite;
+}
+
+.header{
+    width: 1200px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.logo_txt{
+    display: flex;
+    align-items: center;
+}
+
+.project-subtitle {
+    margin-right: 20px;
+    color: floralwhite;
+}
+
+.page{
+    display: flex;
+    height: 1000px;
+    align-items: stretch;
+}
+
+.sidebar{
+    flex: 1.5;
+    background-color:   #d6e9fe;
+    outline: solid  rgb(32, 32, 32) 1px;
+}
+
+.well-plot-container{
+    flex: 3;
+    display: flex;
+    justify-content: center;
+}
+
+.other-plot-container{
+    flex:2;
+    background-color: #d6e9fe;
+    border: solid  rgb(32, 32, 32) 1px;
+}
