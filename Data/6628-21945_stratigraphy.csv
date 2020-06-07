@@ -1,0 +1,8 @@
+﻿well_id,dh_no,unit_long,unit_hyphen,obs_no,dh_name,easting,northing,zone,latitude,longitude,aquifer,unit_depth_from,unit_depth_to,hydro_type,hydro_depth_to_greater_flag,comments,map_symbol,strat_name,hydrostrat_desc,subunit_depth_from,subunit_depth_to,hydro_subunit_code,hydro_subunit_desc
+6628-21945,202582,662821945,6628-21945,,,278164.78,6142204.48,54,-34.8383025,138.5739903,Tomw(T2),0,12,,,,Q,Quaternary rocks,,,,,
+6628-21945,202582,662821945,6628-21945,,,278164.78,6142204.48,54,-34.8383025,138.5739903,Tomw(T2),12,67,,,,Qpah,Hindmarsh Clay,,,,,
+6628-21945,202582,662821945,6628-21945,,,278164.78,6142204.48,54,-34.8383025,138.5739903,Tomw(T2),67,83,,,,Qpac,Carisbrooke Sand,,,,,
+6628-21945,202582,662821945,6628-21945,,,278164.78,6142204.48,54,-34.8383025,138.5739903,Tomw(T2),83,102,,,,Tph,Hallett Cove Sandstone,,,,,
+6628-21945,202582,662821945,6628-21945,,,278164.78,6142204.48,54,-34.8383025,138.5739903,Tomw(T2),102,170,,,,Tomw,Port Willunga Formation,,102,170,T1,T1b aquifer (Upper Member)
+6628-21945,202582,662821945,6628-21945,,,278164.78,6142204.48,54,-34.8383025,138.5739903,Tomw(T2),170,178,,,,Tomwm,Munno Para Clay Member,,,,,
+6628-21945,202582,662821945,6628-21945,,,278164.78,6142204.48,54,-34.8383025,138.5739903,Tomw(T2),178,245.5,,,,Tomw,Port Willunga Formation,,178,245.5,T2,T2 aquifer (Lower Member)
