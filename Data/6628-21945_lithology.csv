@@ -1,0 +1,61 @@
+﻿DHNO,Unit_No,Obs_No,depth_from,depth_to,major_lith_code,minor_lith_code,Description
+202582,6628-21945,,0,4.5,,,"Landfill (pungent, containinng plastic bags, shoes etc)"
+202582,6628-21945,,4.5,6,SAND,SILT,Sandy silt. Transition to native sediment.
+202582,6628-21945,,6,7,SAND,,Light grey medium sand.
+202582,6628-21945,,7,8,CLYU,,Light grey sandy clay.
+202582,6628-21945,,8,9,CLYU,,Dark brown heavy clay.
+202582,6628-21945,,9,12,SAND,SILT,Light brown sandy silt.
+202582,6628-21945,,12,19,CLYU,,Mottled orange/reddish brown heavy clays with some sand.
+202582,6628-21945,,19,21,CLYU,,Light grey silty clay.
+202582,6628-21945,,21,25,CLYU,,Dark orange/reddish brown mottled heavy clay.
+202582,6628-21945,,25,28,CLYU,,Orange/brown and grey mottled heavy clay with yellowish orange fine sand.
+202582,6628-21945,,28,31,CLYU,,Brown and light grey heavy clay.
+202582,6628-21945,,31,38,CLYU,,Brown and light grey mottled clay with some limestone.
+202582,6628-21945,,38,41,CLYU,,Brown and light grey mottled heavy clay.
+202582,6628-21945,,41,42,CLYU,,Brown and light grey mottled heavy clay.
+202582,6628-21945,,42,44,CLYU,,Dark brown and light grey motled heavy clay with some limestone.
+202582,6628-21945,,44,49,SAND,SILT,Sandy silt. Light orange and grey sandy silt.
+202582,6628-21945,,49,57,CLYU,,Red silty clay.
+202582,6628-21945,,57,60,CLYU,,Reddish brown and light grey clay.
+202582,6628-21945,,60,62,CLYU,,Light grey and red silty clay.
+202582,6628-21945,,62,64,CLYU,,"Red and grey clay, some silt."
+202582,6628-21945,,64,67,CLYU,,Red and grey clay.
+202582,6628-21945,,67,70,SAND,SILT,Light yellow and grey sandy silt.
+202582,6628-21945,,70,71,SAND,SILT,"Sandstone? Sand/ silt/ shells. Yellow and grey clay, some fine sand/silt and shell fragments."
+202582,6628-21945,,71,76,SAND,SILT,Light yellow and greey sandy silt.
+202582,6628-21945,,76,78,SAND,SILT,Light yellow and brown sandy silt.
+202582,6628-21945,,78,81,SAND,SILT,"Light yellow and brown sandy silt, glauconite, carbonaceous."
+202582,6628-21945,,81,82,SAND,SILT,"Red, grey and light brown sandy silt, glauconite, carbonaceous"
+202582,6628-21945,,82,83,SAND,SILT,"Red, grey and light brown sandy silt, glauconite, some limestone."
+202582,6628-21945,,83,88,LMST,,"Limestone/ Shells. Light brown limestone, some shells."
+202582,6628-21945,,88,89,LMST,,"Limestone/ Shells. Dark grey sandy limestone marl, some shells."
+202582,6628-21945,,89,94,LMST,,"Limestone/ Shells. Brown and grey sandy limestone marl, abundant shells."
+202582,6628-21945,,94,101,SAND,SILT,"Yellow and grey silty sand, some shells."
+202582,6628-21945,,101,102,SAND,SILT,"Sand/ Silt/ Shells. Yellow and dark grey sandy silt, some shells."
+202582,6628-21945,,102,111,SAND,SILT,"Sand/ Silt/ Shells. Dark grey sandy silt, abundant shells."
+202582,6628-21945,,111,120,LMST,SAND,"Limestone/ Shells/ Sand. Dark grey sandy limestone, abundant shells."
+202582,6628-21945,,120,135,LMST,,Limestone/ Shells. Dark grey shelly limestone.
+202582,6628-21945,,135,139,LMST,,Limestone/ Shells. Dark grey shelly limestone and yellow/grey silty clay.
+202582,6628-21945,,139,141,LMST,CLYU,Limestone/ Shells/ Clay. Dark grey shelly limestone and some reddish brown
+202582,6628-21945,,141,146,LMST,,"Limestone/ Shells. Yellow/ brown limestone, some shells."
+202582,6628-21945,,146,147,LMST,CLYU,"Limestone/ Shells/ Clay. Yellow/ brown limestone, dark grey clay, some shells."
+202582,6628-21945,,147,153,LMST,,Light grey limestone.
+202582,6628-21945,,153,156,LMST,,Light brown limestone.
+202582,6628-21945,,156,158,LMST,,Light grey/ off white limestone.
+202582,6628-21945,,158,160,LMST,,Light grey and dark grey limestone.
+202582,6628-21945,,160,166,LMST,,Grey and pale yellow limestone.
+202582,6628-21945,,166,167,LMST,,Light brown limestone.
+202582,6628-21945,,167,170,LMST,,"Limestone/ Shells. Light brown and dark grey limestone, some shells."
+202582,6628-21945,,170,178,CLYU,,Dark grey heavy clay.
+202582,6628-21945,,178,184,LMST,,Light grey limestone.
+202582,6628-21945,,184,193,LMST,,"Limestone/ Shells. Light grey limestone, some shells."
+202582,6628-21945,,193,196,LMST,,Light brown/ yellow limestone.
+202582,6628-21945,,196,201,LMST,,Light brown limestone.
+202582,6628-21945,,201,203,LMST,,"Limestone/ Shells. Light brown limestone, some shells."
+202582,6628-21945,,203,216,LMST,,Light brown limestone.
+202582,6628-21945,,216,217,LMST,CLYU,"Light brown/green limestone (glauconite?), pockets of dark grey clay."
+202582,6628-21945,,217,222,LMST,,Light grey and light brown limestone.
+202582,6628-21945,,222,227,LMST,,Off white and light brown limestone.
+202582,6628-21945,,227,232,LMST,SILT,"Limestone/ Silt/ Shells. Yellowish brown silty limestone, some shells."
+202582,6628-21945,,232,236,LMST,SILT,"Limestone/ Silt/ Shells.Yellowish brown silty limestone, some brown silty nodules, some shells."
+202582,6628-21945,,236,245.5,LMST,,"Limestone/ Shells. Light brown limestone, some fine sand/ silt and shells"
