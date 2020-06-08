@@ -1,6 +1,8 @@
 from plotly.subplots import make_subplots
 import plotly.graph_objs as go
 
+import numpy
+
 
 class WellLog:
     """Well log wrapper.
@@ -129,3 +131,88 @@ def make_composite_log(
     log.fig.update_layout(template='plotly_white')
 
     return log
+
+def cross_over_log(df, series_1_name, series_2_name, normalized=True, dropna=True):
+    if dropna:
+        dff = df.loc[:, [series_1_name, series_2_name]].dropna()
+    if normalized:
+        return _cross_over_log_norm(dff, series_1_name, series_2_name)
+    else:
+        return _cross_over_log_same_axis(dff, series_1_name, series_2_name)
+
+def _cross_over_log_norm(df, series_1_name, series_2_name):
+    
+    series_1 = df.loc[:, series_1_name]
+    series_2 = df.loc[:, series_2_name]
+
+    series_1_norm = (series_1 - series_1.mean()) / (series_1.max() - series_1.min())
+    series_2_norm = (series_2 - series_2.mean()) / (series_2.max() - series_2.min())
+
+    traces = []
+    for data in [series_1_norm, series_2_norm]:
+        traces.append(
+            go.Scatter(
+                x = data,
+                y = data.index,
+                name=data.name,
+                line=dict(width=0.5),
+            )
+        )
+
+    traces[0].update(fill = 'tonextx')
+
+    traces.append(
+        go.Scatter(
+            x=numpy.max((series_1_norm, series_2_norm), axis=0),
+            y=df.index,
+            name='NPhi',
+            fill='tonextx',
+            line=dict(color='black', width=0),
+        )
+    )
+
+    layout = {}
+
+    fig = go.Figure(data=data, layout=layout)
+    fig.update_layout(template='plotly_white', height=800, width=350)
+    return fig
+
+def _cross_over_log_same_axis(df, series_1_name, series_2_name):
+    
+    series_1 = df.loc[:, series_1_name]
+    series_2 = df.loc[:, series_2_name]
+
+    traces = []
+
+    traces.append(
+        go.Scatter(
+            x=series_1,
+            y=series_1.index,
+            name=series_1.name,
+        )
+    )
+
+    traces.append(
+        go.Scatter(
+            x=series_2,
+            y=series_2.index,
+            xaxis='x2',
+            name=series_2.name,
+        )
+    )
+
+    layout = go.Layout(
+        xaxis=dict(
+            title=series_1.name,
+        ),
+        xaxis2=dict(
+            title=series_2.name,
+            anchor="y",
+            overlaying="x",
+            side="top"
+        ),
+    )
+
+    fig = go.Figure(data=traces, layout=layout)
+    fig.update_layout(template='plotly_white', height=800, width=350)
+    return fig
