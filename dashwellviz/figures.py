@@ -141,7 +141,7 @@ def cross_over_log(df, series_1_name, series_2_name, normalized=True, dropna=Tru
         return _cross_over_log_same_axis(dff, series_1_name, series_2_name)
 
 def _cross_over_log_norm(df, series_1_name, series_2_name):
-    
+
     series_1 = df.loc[:, series_1_name]
     series_2 = df.loc[:, series_2_name]
 
@@ -173,12 +173,12 @@ def _cross_over_log_norm(df, series_1_name, series_2_name):
 
     layout = {}
 
-    fig = go.Figure(data=data, layout=layout)
+    fig = go.Figure(data=traces, layout=layout)
     fig.update_layout(template='plotly_white', height=800, width=350)
     return fig
 
 def _cross_over_log_same_axis(df, series_1_name, series_2_name):
-    
+
     series_1 = df.loc[:, series_1_name]
     series_2 = df.loc[:, series_2_name]
 
