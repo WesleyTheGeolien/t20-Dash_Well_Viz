@@ -1,6 +1,6 @@
 # t20-Dash_Well_Viz
 
-![https://softwareunderground.org](https://img.shields.io/badge/Swung-Slack-blueviolet)
+[![](https://img.shields.io/badge/Swung-Slack-blueviolet)](https://softwareunderground.org)
 
 ## Introduction
 
