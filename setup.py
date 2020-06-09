@@ -10,5 +10,5 @@ setup(
     url="https://github.com/WesleyTheGeolien/t20-Dash_Well_Viz",
     author="Transform 2020 Hackathon Dash_Well_Viz contributors",
     packages=["dashwellviz"],
-    install_requires=["plotly", "dash", "pandas"],
+    install_requires=["plotly", "dash", "pandas", "seaborn"],
 )
