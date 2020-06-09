@@ -161,26 +161,22 @@ def draw_strat(df, fig=None, seaborn_palette="pastel", **kwargs):
     # Get list of labels in stratigraphic order.
     df = df.sort_values(["depth_from", "depth_to"])
     seen = set()
-    
+
     unique_labels = list(df.label.unique())
     colours = sns.color_palette(seaborn_palette, len(unique_labels))
 
     for index, row in df.iterrows():
         label = row.label
         show_legend = False
+
         # If this is the first time we have seen the lith
         # Add it to seen and show the legend
         if not row.label in seen:
             seen.add(label)
             show_legend = True
+
         x = [0, 0, 1, 1, 0]
-        y = [
-                row.depth_to,
-                row.depth_from,
-                row.depth_from,
-                row.depth_to,
-                row.depth_to,
-            ]
+        y = [row.depth_to, row.depth_from, row.depth_from, row.depth_to, row.depth_to]
         intervals = [f"{row.depth_from:.0f}-{row.depth_to:.0f}"]
 
         interval_label = label + " (" + ", ".join(intervals) + ")"
@@ -275,8 +271,18 @@ def draw_lith(df, fig=None, label_width=35, **kwargs):
     """
     if fig is None:
         fig = go.Figure()
+    seen = set()
+
 
     for index, row in df.iterrows():
+        show_legend = False
+
+        # If this is the first time we have seen the class
+        # Add it to seen and show the legend
+        if not row["class"] in seen:
+            seen.add(row["class"])
+            show_legend = True
+
         fig.add_trace(
             go.Scatter(
                 x=[0, 0, 1, 1],
@@ -294,7 +300,8 @@ def draw_lith(df, fig=None, label_width=35, **kwargs):
                 ),
                 name=row["class"],
                 hoverinfo="text+x+y",
-                showlegend=False,
+                showlegend=show_legend,
+                legendgroup=row["class"],
                 mode="lines",
             ),
             **kwargs,
