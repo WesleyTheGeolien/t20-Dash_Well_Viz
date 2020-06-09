@@ -161,33 +161,27 @@ def draw_strat(df, fig=None, seaborn_palette="pastel", **kwargs):
     # Get list of labels in stratigraphic order.
     df = df.sort_values(["depth_from", "depth_to"])
     seen = set()
-    unique_labels = []
-    for _, row in df.iterrows():
-        if not row.label in seen:
-            unique_labels.append(row.label)
-            seen.add(row.label)
-
+    
+    unique_labels = list(df.label.unique())
     colours = sns.color_palette(seaborn_palette, len(unique_labels))
 
-    # Group by label (i.e. groupby stratigraphic unit)
-    for label in unique_labels:
-        dff = df[df.label == label]
-        x = []
-        y = []
-
-        intervals = []
-        for index, row in dff.iterrows():
-            x.extend([0, 0, 1, 1, 0])
-            y.extend(
-                [
-                    row.depth_to,
-                    row.depth_from,
-                    row.depth_from,
-                    row.depth_to,
-                    row.depth_to,
-                ]
-            )
-            intervals.append(f"{row.depth_from:.0f}-{row.depth_to:.0f}")
+    for index, row in df.iterrows():
+        label = row.label
+        show_legend = False
+        # If this is the first time we have seen the lith
+        # Add it to seen and show the legend
+        if not row.label in seen:
+            seen.add(label)
+            show_legend = True
+        x = [0, 0, 1, 1, 0]
+        y = [
+                row.depth_to,
+                row.depth_from,
+                row.depth_from,
+                row.depth_to,
+                row.depth_to,
+            ]
+        intervals = [f"{row.depth_from:.0f}-{row.depth_to:.0f}"]
 
         interval_label = label + " (" + ", ".join(intervals) + ")"
 
@@ -206,6 +200,8 @@ def draw_strat(df, fig=None, seaborn_palette="pastel", **kwargs):
                 name=row.label,
                 hoverinfo="text+x+y",
                 mode="lines",
+                showlegend=show_legend,
+                legendgroup=label,
                 line=dict(width=0.4, color="white"),
             ),
             **kwargs,
