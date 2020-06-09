@@ -132,7 +132,19 @@ def make_composite_log(
     return log
 
 
-def draw_strat(df, fig=None, seaborn_palette="pastel", **kwargs):
+def dummy_trace_for_legend_heading(html_label):
+    return go.Scatter(
+        x=[None],
+        y=[None],
+        name=html_label,
+        # set opacity = 0
+        line={"color": "rgba(0, 0, 0, 0)"},
+    )
+
+
+def draw_strat(
+    df, fig=None, seaborn_palette="pastel", legend_heading="Stratigraphy", **kwargs
+):
     """Draw stratigraphic intervals on a plotly Figure.
 
     Args:
@@ -148,6 +160,7 @@ def draw_strat(df, fig=None, seaborn_palette="pastel", **kwargs):
             on your pre-existing plotly Figure the stratigraphic log
             will be added.
         seaborn_palette (str): see above.
+        legend_heading (str): legend heading - if None, will not be plotted
 
     As described above, additional keyword arguments will be passed to
     ``fig.add_trace``.
@@ -161,26 +174,26 @@ def draw_strat(df, fig=None, seaborn_palette="pastel", **kwargs):
     # Get list of labels in stratigraphic order.
     df = df.sort_values(["depth_from", "depth_to"])
     seen = set()
-    
+
     unique_labels = list(df.label.unique())
     colours = sns.color_palette(seaborn_palette, len(unique_labels))
+
+    if legend_heading:
+        trace = dummy_trace_for_legend_heading(legend_heading)
+        fig.add_trace(trace, **kwargs)
 
     for index, row in df.iterrows():
         label = row.label
         show_legend = False
+
         # If this is the first time we have seen the lith
         # Add it to seen and show the legend
         if not row.label in seen:
             seen.add(label)
             show_legend = True
+
         x = [0, 0, 1, 1, 0]
-        y = [
-                row.depth_to,
-                row.depth_from,
-                row.depth_from,
-                row.depth_to,
-                row.depth_to,
-            ]
+        y = [row.depth_to, row.depth_from, row.depth_from, row.depth_to, row.depth_to]
         intervals = [f"{row.depth_from:.0f}-{row.depth_to:.0f}"]
 
         interval_label = label + " (" + ", ".join(intervals) + ")"
@@ -246,7 +259,7 @@ def assign_colours_to_classes(df, seaborn_palette="pastel"):
     return df
 
 
-def draw_lith(df, fig=None, label_width=35, **kwargs):
+def draw_lith(df, fig=None, label_width=35, legend_heading="Lithology", **kwargs):
     """Draw lithological descriptions on a plotly Figure.
 
     Args:
@@ -266,6 +279,7 @@ def draw_lith(df, fig=None, label_width=35, **kwargs):
             will be added.
         label_width (int): number of characters to wrap the labels on for
             the pop-up caption.
+        legend_heading (str): legend heading - if None, will not be plotted
 
     As described above, additional keyword arguments will be passed to
     ``fig.add_trace``.
@@ -275,8 +289,21 @@ def draw_lith(df, fig=None, label_width=35, **kwargs):
     """
     if fig is None:
         fig = go.Figure()
+    seen = set()
+
+    if legend_heading:
+        trace = dummy_trace_for_legend_heading(legend_heading)
+        fig.add_trace(trace, **kwargs)
 
     for index, row in df.iterrows():
+        show_legend = False
+
+        # If this is the first time we have seen the class
+        # Add it to seen and show the legend
+        if not row["class"] in seen:
+            seen.add(row["class"])
+            show_legend = True
+
         fig.add_trace(
             go.Scatter(
                 x=[0, 0, 1, 1],
@@ -294,7 +321,8 @@ def draw_lith(df, fig=None, label_width=35, **kwargs):
                 ),
                 name=row["class"],
                 hoverinfo="text+x+y",
-                showlegend=False,
+                showlegend=show_legend,
+                legendgroup=row["class"],
                 mode="lines",
             ),
             **kwargs,
