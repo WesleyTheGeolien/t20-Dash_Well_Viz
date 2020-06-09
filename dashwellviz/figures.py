@@ -132,7 +132,19 @@ def make_composite_log(
     return log
 
 
-def draw_strat(df, fig=None, seaborn_palette="pastel", **kwargs):
+def dummy_trace_for_legend_heading(html_label):
+    return go.Scatter(
+        x=[None],
+        y=[None],
+        name=html_label,
+        # set opacity = 0
+        line={"color": "rgba(0, 0, 0, 0)"},
+    )
+
+
+def draw_strat(
+    df, fig=None, seaborn_palette="pastel", legend_heading="Stratigraphy", **kwargs
+):
     """Draw stratigraphic intervals on a plotly Figure.
 
     Args:
@@ -148,6 +160,7 @@ def draw_strat(df, fig=None, seaborn_palette="pastel", **kwargs):
             on your pre-existing plotly Figure the stratigraphic log
             will be added.
         seaborn_palette (str): see above.
+        legend_heading (str): legend heading - if None, will not be plotted
 
     As described above, additional keyword arguments will be passed to
     ``fig.add_trace``.
@@ -164,6 +177,10 @@ def draw_strat(df, fig=None, seaborn_palette="pastel", **kwargs):
 
     unique_labels = list(df.label.unique())
     colours = sns.color_palette(seaborn_palette, len(unique_labels))
+
+    if legend_heading:
+        trace = dummy_trace_for_legend_heading(legend_heading)
+        fig.add_trace(trace, **kwargs)
 
     for index, row in df.iterrows():
         label = row.label
@@ -242,7 +259,7 @@ def assign_colours_to_classes(df, seaborn_palette="pastel"):
     return df
 
 
-def draw_lith(df, fig=None, label_width=35, **kwargs):
+def draw_lith(df, fig=None, label_width=35, legend_heading="Lithology", **kwargs):
     """Draw lithological descriptions on a plotly Figure.
 
     Args:
@@ -262,6 +279,7 @@ def draw_lith(df, fig=None, label_width=35, **kwargs):
             will be added.
         label_width (int): number of characters to wrap the labels on for
             the pop-up caption.
+        legend_heading (str): legend heading - if None, will not be plotted
 
     As described above, additional keyword arguments will be passed to
     ``fig.add_trace``.
@@ -273,6 +291,9 @@ def draw_lith(df, fig=None, label_width=35, **kwargs):
         fig = go.Figure()
     seen = set()
 
+    if legend_heading:
+        trace = dummy_trace_for_legend_heading(legend_heading)
+        fig.add_trace(trace, **kwargs)
 
     for index, row in df.iterrows():
         show_legend = False
