@@ -35,11 +35,11 @@ def update_picks_on_plot(fig, surface_picks):
                 y0=surface_picks[top_name],
                 y1=surface_picks[top_name],
                 xref="x",
-                x0=-1,
-                x1=1,
+                x0=-1,  # Will need a way to get max an min x axis values until this is done:
+                x1=1,   # https://github.com/plotly/plotly_express/issues/143#issuecomment-615245108
             ) 
             for top_name in surface_picks.keys()
-        ]
+        ] # list comprehension iterating over the surface picks dictionary
     )
 
 update_picks_on_plot(fig_well_1, surface_picks)
