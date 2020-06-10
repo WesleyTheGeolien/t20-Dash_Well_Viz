@@ -159,15 +159,15 @@ def _cross_over_log_norm(df, series_1_name, series_2_name):
             )
         )
 
-    traces[0].update(fill = 'tonextx')
+    traces[1].update(fill = 'tonextx')
 
     traces.append(
         go.Scatter(
             x=numpy.max((series_1_norm, series_2_norm), axis=0),
             y=df.index,
-            name='NPhi',
+            showlegend=False,
             fill='tonextx',
-            line=dict(color='black', width=0),
+            line=dict(color='lightblue', width=0),
         )
     )
 
