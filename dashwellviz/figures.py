@@ -241,7 +241,7 @@ def add_multiaxis_to_subplot_fig(fig, multiaxis_fig, row, col):
     trace_to_change = fig.data[-1]
 
     # Update the xaxis with a new one that doesn't exists 
-    axis_numbers = [key[-1] for key in fig.layout.__dict__['_validators'].keys() if 'xaxis' in key]
+    axis_numbers = [ax.plotly_name[-1] for ax in fig.select_xaxes()]
     # axis 0 doesnt have a number
     axis_numbers.pop(axis_numbers.index('s'))
     new_axis_nb = str(int(max(axis_numbers)) + 1)
