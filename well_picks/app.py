@@ -1,3 +1,5 @@
+from welly import Well
+
 import plotly.express as px
 from dash import Dash
 import dash_core_components as dcc
@@ -6,21 +8,22 @@ from dash.dependencies import Input, Output, State
 
 import json
 import numpy as np
+from pathlib import Path
 
 app = Dash(__name__)
 # Create server variable with Flask server object for use with gunicorn
 server = app.server
 
-# Create sample well log data
-sample_depth = np.arange(0, 10 * np.pi, 0.1)
-sample_log1 = np.sin(sample_depth)
+# load well data
+w = Well.from_las(str(Path("Data") / "Poseidon1Decim.LAS"))
+df = w.df()
 
 # sample pick data
-surface_picks = {"pick_1": 2, "pick_2": 10, "pick_3": 14}
+surface_picks = {"Montara Formation": 4620, "Plover Formation (Top Reservoir)": 4798.4}
 dropdown_options = [{'label': k, 'value': k} for k in list(surface_picks.keys())]
 
 # draw the initial plot
-fig_well_1 = px.line(x=sample_log1, y=sample_depth)
+fig_well_1 = px.line(x=df['ECGR'], y=df.index)
 fig_well_1.update_yaxes(autorange="reversed")
 
 def update_picks_on_plot(fig, surface_picks):
@@ -34,9 +37,9 @@ def update_picks_on_plot(fig, surface_picks):
                 yref="y",
                 y0=surface_picks[top_name],
                 y1=surface_picks[top_name],
-                xref="x",
-                x0=-1,  # Will need a way to get max an min x axis values until this is done:
-                x1=1,   # https://github.com/plotly/plotly_express/issues/143#issuecomment-615245108
+                xref="paper",
+                x0=0 ,  
+                x1=1,   # https://github.com/plotly/plotly_express/issues/143#issuecomment-535494243
             ) 
             for top_name in surface_picks.keys()
         ] # list comprehension iterating over the surface picks dictionary
@@ -48,7 +51,11 @@ update_picks_on_plot(fig_well_1, surface_picks)
 app.layout = html.Div(
     children=[
         dcc.Dropdown(id='top-selector', options=dropdown_options, placeholder="Select a top to edit", style={'width': '200px'}),
-        dcc.Graph(id="well_plot", figure=fig_well_1, style={'width': '40%', 'height':'900px'}),
+        dcc.Graph(id="well_plot",
+                    figure=fig_well_1,
+                    style={'width': '40%', 'height':'900px'},
+                    animate=True), # prevents axis rescaling on graph update
+                    
         
         #hidden_div for storing tops data
         # Currently not hidden for debugging purposes. change style={'display': 'none'}
@@ -82,7 +89,7 @@ def update_figure(surface_picks):
     
     surface_picks = json.loads(surface_picks)
     # regenerate figure with the new horizontal line
-    fig = px.line(x=sample_log1, y=sample_depth)
+    fig = px.line(x=df['ECGR'], y=df.index)
     fig.update_yaxes(autorange="reversed")
     update_picks_on_plot(fig, surface_picks)
     
