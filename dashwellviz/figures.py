@@ -114,9 +114,10 @@ def make_composite_log(
     for i, column_names in enumerate(lines):
         for column in column_names:
             log.add_trace(
-                lines_func(df[column], name=column, **line_kwargs), track_no=i
+                lines_func(df[column], name=column, **line_kwargs), track_no=i,
             )
             columns.append(column)
+        log.fig.layout.annotations[i].update(text = " ".join(column_names))
 
     data_range = df[columns].dropna(how="any")
     log.fig.update_yaxes(range=(max(data_range.index), min(data_range.index)))
