@@ -32,6 +32,15 @@ class WellLog:
             **kwargs,
         )
 
+    def update_subplot_titles(self, titles_dict):
+        """Updates subplot title
+
+        Args:
+            titles_dict (dict): dictionnary with track number as key and title as value
+        """
+        for track, title in titles_dict.items():
+            self.fig.layout.annotations[track].update(text = title)
+
     def get_trace(self, name):
         """Get a dictionary containing the plotly graph object for the trace.
 
@@ -112,12 +121,12 @@ def make_composite_log(
     columns = []
     log = WellLog(n_tracks=n_tracks)
     for i, column_names in enumerate(lines):
+        log.update_subplot_titles({i: " ".join(column_names)})
         for column in column_names:
             log.add_trace(
                 lines_func(df[column], name=column, **line_kwargs), track_no=i,
             )
             columns.append(column)
-        log.fig.layout.annotations[i].update(text = " ".join(column_names))
 
     data_range = df[columns].dropna(how="any")
     log.fig.update_yaxes(range=(max(data_range.index), min(data_range.index)))
