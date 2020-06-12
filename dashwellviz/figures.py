@@ -6,6 +6,8 @@ import seaborn as sns
 
 from dashwellviz.utils import to_plotly_rgb
 
+import numpy
+
 
 class WellLog:
     """Well log wrapper.
@@ -130,6 +132,129 @@ def make_composite_log(
     log.fig.update_layout(template="plotly_white")
 
     return log
+
+
+def cross_over_log(df, series_1_name, series_2_name, normalized=True, dropna=True):
+    if dropna:
+        dff = df.loc[:, [series_1_name, series_2_name]].dropna()
+    if normalized:
+        return _cross_over_log_norm(dff, series_1_name, series_2_name)
+    else:
+        return _cross_over_log_same_axis(dff, series_1_name, series_2_name)
+
+def _cross_over_log_norm(df, series_1_name, series_2_name):
+
+    series_1 = df.loc[:, series_1_name]
+    series_2 = df.loc[:, series_2_name]
+
+    series_1_norm = (series_1 - series_1.mean()) / (series_1.max() - series_1.min())
+    series_2_norm = (series_2 - series_2.mean()) / (series_2.max() - series_2.min())
+
+    traces = []
+    for data in [series_1_norm, series_2_norm]:
+        traces.append(
+            go.Scatter(
+                x = data,
+                y = data.index,
+                name=data.name,
+                line=dict(width=0.5),
+            )
+        )
+
+    traces[1].update(fill = 'tonextx')
+
+    traces.append(
+        go.Scatter(
+            x=numpy.max((series_1_norm, series_2_norm), axis=0),
+            y=df.index,
+            showlegend=False,
+            fill='tonextx',
+            line=dict(color='lightblue', width=0),
+        )
+    )
+
+    layout = {}
+
+    fig = go.Figure(data=traces, layout=layout)
+    fig.update_layout(template='plotly_white', height=800, width=350)
+    return fig
+
+def _cross_over_log_same_axis(df, series_1_name, series_2_name):
+
+    series_1 = df.loc[:, series_1_name]
+    series_2 = df.loc[:, series_2_name]
+
+    traces = []
+
+    traces.append(
+        go.Scatter(
+            x=series_1,
+            y=series_1.index,
+            name=series_1.name,
+        )
+    )
+
+    traces.append(
+        go.Scatter(
+            x=series_2,
+            y=series_2.index,
+            xaxis='x2',
+            name=series_2.name,
+        )
+    )
+
+    layout = go.Layout(
+        xaxis=dict(
+            title=series_1.name,
+        ),
+        xaxis2=dict(
+            title=series_2.name,
+            anchor="y",
+            overlaying="x",
+            side="top"
+        ),
+    )
+
+    fig = go.Figure(data=traces, layout=layout)
+    fig.update_layout(template='plotly_white', height=800, width=350)
+    return fig
+
+def add_multiaxis_to_subplot_fig(fig, multiaxis_fig, row, col):
+    """Add a Figure with multiple Xaxis to a sunplot figure
+
+    Args:
+        fig (Plotly.Figure): The input figure containing subplots created using `make_subplots`
+        multiaxis_fig ([type]): A figure with multiple x axis, created using `_cross_over_log_same_axis`
+        row (int): row to add new figure to
+        col (int): Column to add new figure to
+
+    Returns:
+        Plotly.Figure: input fig with the multiaxis fig in the given row and given column
+    """
+
+    # Extract each trace from the multiaxis_fig and add it to the figure
+    for trace in multiaxis_fig.data:
+        fig.add_trace(
+            trace, 
+            row=row, col=col
+        )
+
+    # Hopefully they are appended in order and not inserted in some funky manner
+    trace_to_change = fig.data[-1]
+
+    # Update the xaxis with a new one that doesn't exists 
+    axis_numbers = [ax.plotly_name[-1] for ax in fig.select_xaxes()]
+    # axis 0 doesnt have a number
+    axis_numbers.pop(axis_numbers.index('s'))
+    new_axis_nb = str(int(max(axis_numbers)) + 1)
+    trace_to_change.xaxis = 'x' + new_axis_nb
+
+    # update layout
+    # Get the layout with the overlaying xaxis from before and update it
+    _xaxis = multiaxis_fig.layout['xaxis2']
+    _xaxis['overlaying'] = fig.data[-2]['xaxis']
+    fig.update_layout({'xaxis' + new_axis_nb: _xaxis})
+    return fig
 
 
 def draw_strat(df, fig=None, seaborn_palette="pastel", **kwargs):
@@ -305,3 +430,4 @@ def draw_lith(df, fig=None, label_width=35, **kwargs):
         )
     fig.update_yaxes(range=(df.depth_to.max(), df.depth_from.min()))
     return fig
+
