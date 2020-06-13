@@ -7,7 +7,10 @@ from dash.dependencies import Input, Output
 import plotly.graph_objs as go
 
 import dashwellviz.figures
-import helper
+try:
+    import helper
+except:
+    import simple_dash_layout.helper as helper
 
 # Load Data
 data_df = helper.load_data()
@@ -45,6 +48,8 @@ fig.update_layout(template='plotly_white', height=800, width=800, title_text="Vp
 
 # Create the app
 app = dash.Dash(__name__)
+
+server = app.server
 
 # Create app layout
 app.layout = html.Div([
