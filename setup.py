@@ -2,6 +2,7 @@ from setuptools import setup
 
 setup(
     name="dashwellviz",
+    use_scm_version=True,
     setup_requires=["setuptools_scm"],
     description="Tools for Transform 2020 Dash_Well_Viz project",
     long_description=open("README.md", "r").read(),
