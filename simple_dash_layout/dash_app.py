@@ -12,6 +12,7 @@ import helper
 # Load Data
 data_df = helper.load_data()
 data_df = helper.add_vp_vs(data_df)
+data_labels_dict = [{'label': c, 'value': c} for c in data_df] # format options for selector dropdowns
 
 # Create log plot from prebuilt figures
 log = dashwellviz.figures.make_composite_log(
@@ -30,7 +31,7 @@ fig = go.Figure(data=go.Scatter(
     opacity=0.7,
     marker=dict(
         size=8,
-        color=data_df['NPHI'], #set color equal to a variable
+        color=data_df['ECGR'], #set color equal to a variable
         colorscale='turbid', # one of plotly colorscales
         line=dict(
             color='black',
@@ -56,7 +57,25 @@ app.layout = html.Div([
         html.Div(className='sidebar', children=[
             html.H1('Sidebar'),
             'Configuration tools (dropdowns etc.) can go in here)',
-            dcc.Dropdown(placeholder="Select a well")
+            dcc.Dropdown(id='well-selector', placeholder="Select a well"),
+            dcc.Checklist(id='curve-selectors', options=data_labels_dict, style={'display': 'inline-block'}), # TODO: layout checkbox elements
+            
+            html.H2('Crossplot Options'),
+            html.H4('Cross Plot X Axis'),
+            dcc.Dropdown(id='x-plot-x-axis', placeholder='Select a log curve', options=data_labels_dict),
+
+            html.H4('Cross Plot Y Axis'),
+            dcc.Dropdown(id='x-plot-y-axis', placeholder='Select a log curve', options=data_labels_dict),
+
+            html.H4('Cross Plot Marker Color'),
+            dcc.Dropdown(id='x-plot-color', placeholder='Select a log curve', options=data_labels_dict),
+            
+            html.H4('Cross Plot Color'),
+            dcc.Dropdown(id='x-plot-size', placeholder='Select a log curve', options=data_labels_dict),
+            
+            html.H2('Histogram Options'),
+            html.H4('Histogram Column'),
+            dcc.Dropdown(id='hist-column', placeholder='Select a log curve', options=data_labels_dict),
         ]),
 
         html.Div([
@@ -69,7 +88,9 @@ app.layout = html.Div([
         html.Div(className='other-plot-container', children=[
             html.H1('Other Plots Can Go Here'),
             'cross plots, maps, etc',
-            dcc.Graph(figure=fig)
+            html.Div(
+                dcc.Graph(figure=fig)
+            ),
 
         ]),
     ])
