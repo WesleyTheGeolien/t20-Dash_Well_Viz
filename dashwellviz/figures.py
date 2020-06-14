@@ -32,6 +32,16 @@ class WellLog:
             **kwargs,
         )
 
+    def update_track_titles(self, track_titles):
+        """Update track/subplot title(s).
+
+        Args:
+            track_titles (dict): dictionary with track number as key and title as value
+
+        """
+        for track, title in track_titles.items():
+            self.fig.layout.annotations[track].update(text=title)
+
     def get_trace(self, name):
         """Get a dictionary containing the plotly graph object for the trace.
 
@@ -112,9 +122,10 @@ def make_composite_log(
     columns = []
     log = WellLog(n_tracks=n_tracks)
     for i, column_names in enumerate(lines):
+        log.update_track_titles({i: ", ".join(column_names)})
         for column in column_names:
             log.add_trace(
-                lines_func(df[column], name=column, **line_kwargs), track_no=i
+                lines_func(df[column], name=column, **line_kwargs), track_no=i,
             )
             columns.append(column)
 
@@ -245,14 +256,14 @@ def add_multiaxis_to_subplot_fig(fig, multiaxis_fig, row, col):
     # Extract each trace from the multiaxis_fig and add it to the figure
     for trace in multiaxis_fig.data:
         fig.add_trace(
-            trace, 
+            trace,
             row=row, col=col
         )
 
     # Hopefully they are appended in order and not inserted in some funky manner
     trace_to_change = fig.data[-1]
 
-    # Update the xaxis with a new one that doesn't exists 
+    # Update the xaxis with a new one that doesn't exists
     axis_numbers = [ax.plotly_name[-1] for ax in fig.select_xaxes()]
     # axis 0 doesnt have a number
     axis_numbers.pop(axis_numbers.index('s'))
