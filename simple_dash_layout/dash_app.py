@@ -12,7 +12,13 @@ import helper
 # Load Data
 data_df = helper.load_data()
 data_df = helper.add_vp_vs(data_df)
-data_labels_dict = [{'label': c, 'value': c} for c in data_df] # format options for selector dropdowns
+
+# set up options for dropdown selectors
+data_labels_dict = [{'label': c, 'value': c} for c in data_df.columns]
+
+list_of_well_names = ['Poseidon 1', 'Placeholder well 2 (no data here)']
+well_names_labels_dict = [{'label': w, 'value': w} for w in list_of_well_names] 
+
 
 # Create log plot from prebuilt figures
 log = dashwellviz.figures.make_composite_log(
@@ -56,8 +62,7 @@ app.layout = html.Div([
 
         html.Div(className='sidebar', children=[
             html.H1('Sidebar'),
-            'Configuration tools (dropdowns etc.) can go in here)',
-            dcc.Dropdown(id='well-selector', placeholder="Select a well"),
+            dcc.Dropdown(id='well-selector', placeholder="Select a well", options=well_names_labels_dict, value='Poseidon 1'),
             dcc.Checklist(id='curve-selectors', options=data_labels_dict, style={'display': 'inline-block'}), # TODO: layout checkbox elements
             
             html.H2('Crossplot Options'),
@@ -71,8 +76,9 @@ app.layout = html.Div([
             html.H4('Cross Plot Marker Color'),
             dcc.Dropdown(id='x-plot-color', placeholder='Select a log curve', options=data_labels_dict, value='ECGR'),
             
-            html.H4('Cross Plot Marker Size'), 
-            dcc.Dropdown(id='x-plot-size', placeholder='Select a log curve', options=data_labels_dict),
+            # TODO implement cross plot marker size
+            # html.H4('Cross Plot Marker Size'), 
+            # dcc.Dropdown(id='x-plot-size', placeholder='Select a log curve', options=data_labels_dict),
             
             html.H2('Histogram Options'),
             html.H4('Histogram Column'),
@@ -80,7 +86,7 @@ app.layout = html.Div([
         ]),
 
         html.Div([
-            html.H1('Well Plots Can Go Here'),
+            html.H1('Poseidon 1', id='log-plot-header', style={'text-align': 'center'}),
             html.Div(className='well-plot-container', children=[
                 dcc.Graph(figure=log_trace_fig) 
             ]),
@@ -89,24 +95,26 @@ app.layout = html.Div([
         html.Div(className='other-plot-container', children=[
             html.H1('Other Plots Can Go Here'),
             'cross plots, maps, etc',
-            html.Div(
-                dcc.Graph(id='single-w-cross-plot', figure=fig)
-            ),
+            html.Div(children=[
+                dcc.Graph(id='single-w-cross-plot', figure=fig),                
+                dcc.Graph(id='single-w-cross-plot2', figure=fig),
+            ]),
 
         ]),
     ])
 ])
 
-# Cross plot options
+# Cross plot axis options
+# TODO add marker size option
 @app.callback(
     Output('single-w-cross-plot', 'figure'),
     [Input('x-plot-y-axis', 'value'),
     Input('x-plot-x-axis', 'value'),
     Input('x-plot-color', 'value')])
 def update_cross_plot(y_axis, x_axis, color):
-    
-    # TODO this really, really needs to be abstracted
-    # make cross plot 
+
+    # Update cross plot 
+    # TODO this really, really needs to be abstracted 
     fig = go.Figure(data=go.Scatter(
         x = data_df[x_axis],
         y = data_df[y_axis],
@@ -128,6 +136,14 @@ def update_cross_plot(y_axis, x_axis, color):
     fig.update_layout(template='plotly_white', height=800, width=800, title_text=f"Vp Vs Xplot - coloured by {color}")
 
     return fig
+
+# well dropdown. Currently updates log plot title
+@app.callback(
+    Output('log-plot-header', 'children'),
+    [Input('well-selector', 'value')])
+def update_well_name_in_title(value):
+    return value
+
 
 # Run the app
 if __name__ == '__main__':
