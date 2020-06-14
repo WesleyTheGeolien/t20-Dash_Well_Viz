@@ -61,16 +61,17 @@ app.layout = html.Div([
             dcc.Checklist(id='curve-selectors', options=data_labels_dict, style={'display': 'inline-block'}), # TODO: layout checkbox elements
             
             html.H2('Crossplot Options'),
-            html.H4('Cross Plot X Axis'),
-            dcc.Dropdown(id='x-plot-x-axis', placeholder='Select a log curve', options=data_labels_dict),
 
             html.H4('Cross Plot Y Axis'),
-            dcc.Dropdown(id='x-plot-y-axis', placeholder='Select a log curve', options=data_labels_dict),
+            dcc.Dropdown(id='x-plot-y-axis', placeholder='Select a log curve', options=data_labels_dict, value='Vs'),
 
-            html.H4('Cross Plot Marker Color'),
-            dcc.Dropdown(id='x-plot-color', placeholder='Select a log curve', options=data_labels_dict),
+            html.H4('Cross Plot X Axis'),
+            dcc.Dropdown(id='x-plot-x-axis', placeholder='Select a log curve', options=data_labels_dict, value='Vp'),
             
-            html.H4('Cross Plot Color'),
+            html.H4('Cross Plot Marker Color'),
+            dcc.Dropdown(id='x-plot-color', placeholder='Select a log curve', options=data_labels_dict, value='ECGR'),
+            
+            html.H4('Cross Plot Marker Size'), 
             dcc.Dropdown(id='x-plot-size', placeholder='Select a log curve', options=data_labels_dict),
             
             html.H2('Histogram Options'),
@@ -89,12 +90,44 @@ app.layout = html.Div([
             html.H1('Other Plots Can Go Here'),
             'cross plots, maps, etc',
             html.Div(
-                dcc.Graph(figure=fig)
+                dcc.Graph(id='single-w-cross-plot', figure=fig)
             ),
 
         ]),
     ])
 ])
+
+# Cross plot options
+@app.callback(
+    Output('single-w-cross-plot', 'figure'),
+    [Input('x-plot-y-axis', 'value'),
+    Input('x-plot-x-axis', 'value'),
+    Input('x-plot-color', 'value')])
+def update_cross_plot(y_axis, x_axis, color):
+    
+    # TODO this really, really needs to be abstracted
+    # make cross plot 
+    fig = go.Figure(data=go.Scatter(
+        x = data_df[x_axis],
+        y = data_df[y_axis],
+        mode='markers',
+        opacity=0.7,
+        marker=dict(
+            size=8,
+            color=data_df[color], #set color equal to a variable
+            colorscale='turbid', # one of plotly colorscales
+            line=dict(
+                color='black',
+                width=1
+            ),
+            showscale=True
+        )
+    ))
+    fig.update_xaxes(title_text=x_axis)
+    fig.update_yaxes(title_text=y_axis)
+    fig.update_layout(template='plotly_white', height=800, width=800, title_text=f"Vp Vs Xplot - coloured by {color}")
+
+    return fig
 
 # Run the app
 if __name__ == '__main__':
