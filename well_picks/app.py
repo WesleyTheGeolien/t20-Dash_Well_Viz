@@ -11,6 +11,8 @@ import numpy as np
 import pandas as pd
 from pathlib import Path
 
+import helper
+
 app = Dash(__name__)
 # Create server variable with Flask server object for use with gunicorn
 server = app.server
@@ -26,27 +28,7 @@ dropdown_options = [{'label': k, 'value': k} for k in list(surface_picks.keys())
 # draw the initial plot
 fig_well_1 = px.line(x=df['ECGR'], y=df.index)
 fig_well_1.update_yaxes(autorange="reversed")
-
-def update_picks_on_plot(fig, surface_picks):
-    """Draw horizontal lines on a figure at the depths of the values in the
-       surface picks dictionary"""
-
-    fig.update_layout(
-        shapes=[
-            dict(
-                type="line",
-                yref="y",
-                y0=surface_picks[top_name],
-                y1=surface_picks[top_name],
-                xref="paper",
-                x0=0 ,  
-                x1=1,   # https://github.com/plotly/plotly_express/issues/143#issuecomment-535494243
-            ) 
-            for top_name in surface_picks.keys()
-        ] # list comprehension iterating over the surface picks dictionary
-    )
-
-update_picks_on_plot(fig_well_1, surface_picks)
+helper.update_picks_on_plot(fig_well_1, surface_picks)
 
 
 app.layout = html.Div(
@@ -86,8 +68,6 @@ def update_pick_storage(clickData, active_pick, surface_picks):
 
         # update the tops depth dict
         surface_picks[active_pick] = y
-        update_picks_on_plot(fig_well_1, surface_picks)
-
         surface_picks.pop("", None)
 
     return json.dumps(surface_picks)
@@ -103,9 +83,9 @@ def update_figure(surface_picks):
     # regenerate figure with the new horizontal line
     fig = px.line(x=df['ECGR'], y=df.index)
     fig.update_yaxes(autorange="reversed")
-    update_picks_on_plot(fig, surface_picks)
+    helper.update_picks_on_plot(fig, surface_picks)
     
-    return fig_well_1
+    return fig
 
 @app.callback(
     Output('placeholder', 'children'),
@@ -124,5 +104,5 @@ def save_picks(n_clicks, surface_picks, path):
 
     return
 
-
-app.run_server(port=4545, debug=True)
+if __name__ == "__main__":
+    app.run_server(port=4545, debug=True)
