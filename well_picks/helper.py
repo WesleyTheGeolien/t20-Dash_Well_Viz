@@ -1,3 +1,4 @@
+from striplog import Striplog
 
 def update_picks_on_plot(fig, surface_picks):
     """Draw horizontal lines on a figure at the depths of the values in the
@@ -30,3 +31,14 @@ def update_picks_on_plot(fig, surface_picks):
             for top_name in surface_picks.keys() if surface_picks[top_name]
         ]
     )
+    return
+
+
+def surface_pick_dict_to_striplog(surface_picks):
+    """
+    Generate a striplog object from a dictionary of surface picks:
+        eg {"top1": depth, "top2": depth}
+    """
+    csv_text = '\n'.join([f'{k},{v}' for k, v in surface_picks.items()])
+    csv_text = "Comp Formation, Depth\n" + csv_text
+    return Striplog.from_csv(text=csv_text)

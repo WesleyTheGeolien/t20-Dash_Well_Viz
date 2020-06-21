@@ -22,7 +22,7 @@ w = Well.from_las(str(Path("Data") / "Poseidon1Decim.LAS"))
 df = w.df()
 
 # sample pick data, eventually load from file or other source into dict
-surface_picks = {"Montara Formation": 4620, "Plover Formation (Top Reservoir)": 4798.4}
+surface_picks = {"Sea Bed": 520.4, "Montara Formation": 4620, "Plover Formation (Top Volcanics)": 4703.2, "Plover Formation (Top Reservoir)": 4798.4, "Nome Formation": 5079}
 dropdown_options = [{'label': k, 'value': k} for k in list(surface_picks.keys())]
 
 # draw the initial plot
@@ -46,16 +46,25 @@ app.layout = html.Div(
             "Write tops to file:",
             dcc.Input(id='input-save-path', type='text', placeholder='path_to_save_picks.json', value=''),
             html.Button('Save Tops', id='save-button', n_clicks=0),
+
+            html.Hr(),
+            html.Button('Generate Striplog', id='gen-striplog-button')
+
         ]),
         dcc.Graph(id="well_plot",
                     figure=fig_well_1,
                     style={'width': '40%', 'height':'900px'},
                     animate=True), # prevents axis rescaling on graph update
                     
-        
-        # hidden_div for storing tops data as json
-        # Currently not hidden for debugging purposes. change style={'display': 'none'}
-        html.Div(id='tops-storage', children=json.dumps(surface_picks)),#, style={'display': 'none'}),
+        html.Div([
+            # hidden_div for storing tops data as json
+            # Currently not hidden for debugging purposes. change style={'display': 'none'}
+            html.Div(id='tops-storage', children=json.dumps(surface_picks)),#, style={'display': 'none'}),
+
+            html.Hr(),
+            html.H4('Striplog CSV Text:'),
+            html.Pre(id='striplog-txt', children='', style={'white-space': 'pre-wrap'}),
+        ]),
         
         # hidden_div for storing un-needed output
         html.Div(id='placeholder', style={'display': 'none'})
@@ -118,6 +127,7 @@ def update_figure(surface_picks):
     return fig
 
 
+# update dropdown options when new pick is created
 @app.callback(
     Output("top-selector", "options"),
     [Input('tops-storage', 'children')])
@@ -147,7 +157,17 @@ def save_picks(n_clicks, surface_picks, path):
 
     return
 
-
+# create striplog csv text
+@app.callback(
+    Output('striplog-txt', 'children'),
+    [Input('gen-striplog-button', 'n_clicks')],
+    [State('tops-storage', 'children')])
+def generate_striplog(n_clicks, surface_picks):
+    surface_picks = json.loads(surface_picks)
+    surface_picks = {key:val for key, val in surface_picks.items() if (key and val)}
+    
+    s = helper.surface_pick_dict_to_striplog(surface_picks)
+    return json.dumps(s.to_csv())
 
 if __name__ == "__main__":
     app.run_server(port=4545, debug=True)
