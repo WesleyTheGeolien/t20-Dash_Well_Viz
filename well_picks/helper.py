@@ -14,7 +14,7 @@ def update_picks_on_plot(fig, surface_picks):
                 x0=0 ,  
                 x1=1,   # https://github.com/plotly/plotly_express/issues/143#issuecomment-535494243
             ) 
-            for top_name in surface_picks.keys()
+            for top_name in surface_picks.keys() if surface_picks[top_name]
         ], # list comprehension iterating over the surface picks dictionary
 
         annotations=[
@@ -27,6 +27,6 @@ def update_picks_on_plot(fig, surface_picks):
                 ax=0,
                 ay=-8
             )
-            for top_name in surface_picks.keys()
+            for top_name in surface_picks.keys() if surface_picks[top_name]
         ]
     )
