@@ -48,7 +48,7 @@ app.layout = html.Div(
             html.Button('Save Tops', id='save-button', n_clicks=0),
 
             html.Hr(),
-            html.Button('Generate Striplog', id='gen-striplog-button')
+            html.Button('Update Striplog', id='gen-striplog-button')
 
         ]),
         dcc.Graph(id="well_plot",
