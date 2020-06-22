@@ -2,9 +2,12 @@ import dash
 from dash import Dash
 import dash_core_components as dcc
 import dash_html_components as html
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 
 import plotly.graph_objs as go
+
+import json
+import pandas as pd
 
 import dashwellviz.figures
 import helper
@@ -12,6 +15,8 @@ import helper
 # Load Data
 data_df = helper.load_data()
 data_df = helper.add_vp_vs(data_df)
+
+loaded = False
 
 # set up options for dropdown selectors
 data_labels_dict = [{'label': c, 'value': c} for c in data_df.columns]
@@ -57,6 +62,29 @@ app.layout = html.Div([
     
     helper.get_header(),
 
+    html.Div(className='dataUpload', children = [
+            dcc.Upload(
+                id='upload-data',
+                children=html.Div([
+                    'Drag and Drop or ',
+                    html.A('Select Files')
+                ]),
+                style={
+                    'width': '100%',
+                    'height': '60px',
+                    'lineHeight': '60px',
+                    'borderWidth': '1px',
+                    'borderStyle': 'dashed',
+                    'borderRadius': '5px',
+                    'textAlign': 'center',
+                    'margin': '10px'
+                },
+                # Allow multiple files to be uploaded
+                multiple=False
+            ),
+            html.Div(id='data', style = {'display': 'None'}),
+        ]),
+
     html.Div(className='page', children=[
 
         html.Div(className='sidebar', children=[
@@ -90,7 +118,7 @@ app.layout = html.Div([
         html.Div([
             html.H1('Poseidon 1', id='log-plot-header', style={'text-align': 'center'}),
             html.Div(className='well-plot-container', children=[
-                dcc.Graph(id='log-trace-plot', figure=log_trace_fig) 
+                dcc.Graph(id='log-trace-plot') 
             ]),
         ]),
     
@@ -98,13 +126,21 @@ app.layout = html.Div([
             html.H1('Other Plots Can Go Here'),
             'cross plots, maps, etc',
             html.Div(children=[
-                dcc.Graph(id='single-w-cross-plot', figure=fig),                
+                dcc.Graph(id='single-w-cross-plot'),                
                 dcc.Graph(id='single-w-cross-plot2', figure=fig),
             ]),
 
         ]),
     ])
 ])
+
+@app.callback(Output('data', 'children'),
+              [Input('upload-data', 'contents')],
+              [State('upload-data', 'filename'),
+               State('upload-data', 'last_modified')])
+def load_data(list_of_contents, list_of_names, list_of_dates):
+    data_df = helper.parse_contents(list_of_contents, list_of_names, list_of_dates)
+    return data_df.to_json()
 
 # Cross plot axis options
 # TODO add marker size option
@@ -139,6 +175,14 @@ def update_cross_plot(y_axis, x_axis, color):
 
     return fig
 
+@app.callback(
+    Output('well-selector', 'options'),
+    [Input('data', 'children')]
+)
+def udpate_well_selector(json_data):
+    print('Updating well selector')
+    print(pd.read_json(json_data))
+
 # well dropdown. Currently updates log plot title
 @app.callback(
     Output('log-plot-header', 'children'),
@@ -149,8 +193,10 @@ def update_well_name_in_title(value):
 # Choose the displayed log curves from checkbox
 @app.callback(
     Output('log-trace-plot', 'figure'),
-    [Input('curve-selectors', 'value')])
-def update_log_plots_on_curve_selection(curve_names):
+    [Input('curve-selectors', 'value'),
+     Input('data', 'children')])
+def update_log_plots_on_curve_selection(curve_names, json_data):
+    data_df = pd.read_json(json_data)
     return helper.composite_plot_from_list_of_log_names(data_df, curve_names)
 
 # Run the app

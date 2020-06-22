@@ -1,4 +1,6 @@
 # TODO this file should probably only be ephemere during developement and used to abstract the  dash app
+import base64
+import io
 
 import dash_html_components as html
 
@@ -67,3 +69,19 @@ def composite_plot_from_list_of_log_names(data_df, curve_names):
     log_trace_fig = log.fig
     log_trace_fig.update_layout(template='plotly_white', height=800, width=800)
     return log_trace_fig
+
+
+def parse_contents(contents, filename, date):
+    content_type, content_string = contents.split(',')
+
+    decoded = base64.b64decode(content_string)
+
+    try:
+        if 'las' in filename.lower():
+            w = Well.from_las(decoded.decode('utf-8'))
+            return w.df()
+    except Exception as e:
+        print(e)
+        return html.Div([
+            'There was an error processing this file.'
+        ])
