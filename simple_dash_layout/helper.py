@@ -47,7 +47,7 @@ def get_header():
         ]
     )
 
-def composite_plot_from_list_of_log_names(data_df, curve_names):
+def composite_plot_from_list_of_log_names(data_df, curve_names, line_kwargs=None):
 
     """Abstraction for creating the log plot from the checkbox
 
@@ -61,7 +61,7 @@ def composite_plot_from_list_of_log_names(data_df, curve_names):
         plotly figure
     """
     log = dashwellviz.figures.make_composite_log(
-        data_df, lines=[[curve] for curve in curve_names]
+        data_df, lines=[[curve] for curve in curve_names], line_kwargs=line_kwargs
     )
 
     log_trace_fig = log.fig

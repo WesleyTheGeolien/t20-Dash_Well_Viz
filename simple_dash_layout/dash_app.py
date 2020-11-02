@@ -112,9 +112,12 @@ app.layout = html.Div([
     Output('single-w-cross-plot', 'figure'),
     [Input('x-plot-y-axis', 'value'),
     Input('x-plot-x-axis', 'value'),
-    Input('x-plot-color', 'value')])
-def update_cross_plot(y_axis, x_axis, color):
-
+    Input('x-plot-color', 'value'),
+    Input('log-trace-plot', 'selectedData'),])
+def update_cross_plot(y_axis, x_axis, color, selectedData):
+    selectedpoints = None
+    if selectedData:
+        selectedpoints = [point['pointIndex'] for point in selectedData['points']]
     # Update cross plot 
     # TODO this really, really needs to be abstracted 
     fig = go.Figure(data=go.Scatter(
@@ -136,6 +139,7 @@ def update_cross_plot(y_axis, x_axis, color):
     fig.update_xaxes(title_text=x_axis)
     fig.update_yaxes(title_text=y_axis)
     fig.update_layout(template='plotly_white', height=800, width=800, title_text=f"Vp Vs Xplot - coloured by {color}")
+    fig.update_traces(selectedpoints=selectedpoints)
 
     return fig
 
@@ -151,7 +155,7 @@ def update_well_name_in_title(value):
     Output('log-trace-plot', 'figure'),
     [Input('curve-selectors', 'value')])
 def update_log_plots_on_curve_selection(curve_names):
-    return helper.composite_plot_from_list_of_log_names(data_df, curve_names)
+    return helper.composite_plot_from_list_of_log_names(data_df, curve_names, line_kwargs=dict(mode='lines+markers', marker={'size': 0.1}))
 
 # Run the app
 if __name__ == '__main__':
