@@ -6,6 +6,8 @@ import dashwellviz
 from welly import Well
 import pandas as pd
 
+from plotly import graph_objs as go
+
 def load_data(filename='Data/Poseidon1Decim.LAS'):
     """Fake data loader
 
@@ -47,7 +49,7 @@ def get_header():
         ]
     )
 
-def composite_plot_from_list_of_log_names(data_df, curve_names, line_kwargs=None):
+def composite_plot_from_list_of_log_names(data_df, curve_names, selectedpoints=None, line_kwargs=None):
 
     """Abstraction for creating the log plot from the checkbox
 
@@ -64,6 +66,35 @@ def composite_plot_from_list_of_log_names(data_df, curve_names, line_kwargs=None
         data_df, lines=[[curve] for curve in curve_names], line_kwargs=line_kwargs
     )
 
-    log_trace_fig = log.fig
+    fig = log.fig
+
+    if selectedpoints:
+        line_kwargs_markers = line_kwargs.copy()
+        line_kwargs_markers['mode'] = 'markers'
+        line_kwargs_markers['marker'] = {
+            'size': 3
+        }
+        markers = dashwellviz.figures.make_composite_log(
+            data_df, lines=[[curve] for curve in curve_names], line_kwargs=line_kwargs_markers
+        )
+
+        line_kwargs_line = line_kwargs.copy()
+        line_kwargs_line['mode'] = 'lines'
+        line_kwargs_line['opacity'] = 0.2
+        lines = dashwellviz.figures.make_composite_log(
+            data_df, lines=[[curve] for curve in curve_names], line_kwargs=line_kwargs_line
+        )
+
+        traces = []
+        traces.extend(markers.fig['data'])
+        traces.extend(lines.fig['data'])
+        fig = go.Figure(
+            layout = log.fig.layout,
+            data = traces,
+        )
+        print(fig)
+
+    log_trace_fig = fig
     log_trace_fig.update_layout(template='plotly_white', height=800, width=800)
+    log_trace_fig.update_traces(selectedpoints=selectedpoints)
     return log_trace_fig

@@ -153,9 +153,19 @@ def update_well_name_in_title(value):
 # Choose the displayed log curves from checkbox
 @app.callback(
     Output('log-trace-plot', 'figure'),
-    [Input('curve-selectors', 'value')])
-def update_log_plots_on_curve_selection(curve_names):
-    return helper.composite_plot_from_list_of_log_names(data_df, curve_names, line_kwargs=dict(mode='lines+markers', marker={'size': 0.1}))
+    [Input('curve-selectors', 'value'),
+    Input('single-w-cross-plot', 'selectedData')])
+def update_log_plots_on_curve_selection(curve_names, selectedData):
+    selectedpoints = None
+    if selectedData:
+        selectedpoints = [point['pointIndex'] for point in selectedData['points']]
+    return helper.composite_plot_from_list_of_log_names(data_df, 
+                                                        curve_names, 
+                                                        selectedpoints=selectedpoints,
+                                                        line_kwargs=dict(
+                                                            mode='lines+markers', 
+                                                            marker={'size': 0.1}
+                                                        ))
 
 # Run the app
 if __name__ == '__main__':
